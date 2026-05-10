@@ -1,0 +1,229 @@
+# === PYTHON ===
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+media/
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# Translations
+*.mo
+*.pot
+
+# Django stuff:
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Flask stuff:
+instance/
+.webassets-cache
+
+# Scrapy stuff:
+.scrapy
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+.pybuilder/
+target/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+# pyenv
+.python-version
+
+# pipenv
+Pipfile.lock
+
+# poetry
+poetry.lock
+
+# pdm
+.pdm.toml
+
+# PEP 582
+__pypackages__/
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Environments
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# pytype static type analyzer
+.pytype/
+
+# Cython debug symbols
+cython_debug/
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# === DJANGO SPECIFIC ===
+*.pot
+*.pyc
+local_settings.py
+
+# === DATABASE ===
+*.sql
+*.sqlite
+*.sqlite3
+
+# === DOCKER ===
+*.pid
+docker-compose.override.yml
+
+# === LOGS ===
+logs/
+*.log
+nginx_logs/
+
+# === VS CODE ===
+.vscode/
+*.code-workspace
+
+# === MAC OS ===
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.Spotlight-V100
+.Trashes
+
+# === WINDOWS ===
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# === PROJECT SPECIFIC ===
+# VietDon specific ignores
+backend/media/profile_pics/
+backend/media/page_covers/
+logs/
+data/
+*.pid
+*.sock
+
+# Backup files
+*.bak
+*.backup
+
+# Temporary files
+*.tmp
+*.temp
+cache/
+tmp/
+
+# Test outputs
+test_results/
+htmlcov/
+.coverage
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# Security (don't commit credentials)
+**/secrets.py
+**/credentials.json
+**/service-account.json
+
+# Package manager locks (if not using them)
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# IDE project settings (except team-shared)
+.idea/
+.vscode/
+*.sublime-*
+.project
+.classpath
+
+# Database migrations backup
+backend/*/migrations/__pycache__/
+# But keep migration files (they're code)
+!backend/*/migrations/*.py
+
+# Docker environment overrides
+docker-compose.override.yml
