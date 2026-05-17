@@ -18,6 +18,56 @@ from core.services.system_backup_service import (
 from resources.models import Category, Resource
 
 
+class HomeViewTests(TestCase):
+    def setUp(self) -> None:
+        python = Category.objects.create(name="Python")
+        design = Category.objects.create(name="Design")
+        for idx in range(15):
+            Resource.objects.create(
+                title=f"Django Course {idx}",
+                description="Backend web development",
+                course_link=f"https://example.com/django-{idx}",
+                category=python,
+            )
+        Resource.objects.create(
+            title="Color Systems",
+            description="Visual design foundations",
+            course_link="https://example.com/design",
+            category=design,
+        )
+
+    def test_home_renders_course_cards(self) -> None:
+        response = self.client.get("/")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Course Finder")
+        self.assertContains(response, "Django Course")
+        self.assertContains(response, "Mở bài học")
+
+    def test_home_search_filters_resources(self) -> None:
+        response = self.client.get("/", {"q": "Color"})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Color Systems")
+        self.assertNotContains(response, "Django Course 0")
+
+    def test_home_category_filter_filters_resources(self) -> None:
+        design = Category.objects.get(name="Design")
+
+        response = self.client.get("/", {"category": design.id})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Color Systems")
+        self.assertContains(response, "Tất cả")
+        self.assertNotContains(response, "Django Course 0")
+
+    def test_home_query_count_is_stable_for_resource_grid(self) -> None:
+        with self.assertNumQueries(3):
+            response = self.client.get("/")
+
+        self.assertEqual(response.status_code, 200)
+
+
 class SystemBackupTests(TestCase):
     def setUp(self) -> None:
         self.media_root = tempfile.TemporaryDirectory()

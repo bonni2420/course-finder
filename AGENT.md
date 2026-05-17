@@ -25,6 +25,7 @@ Main apps:
   - `MEDIA_ROOT = BASE_DIR / "media"`
   - `static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)` in `course_finder/urls.py` when `DEBUG=True`.
 - Django admin uses `django-jazzmin` for the admin theme.
+- The public homepage lives at `/` and is served by `core.views.home`.
 - `Resource.thumbnail_url` is an `ImageField`, despite the historical field name.
   - Upload path: `media/resource_thumbnails/`
   - DB stores the uploaded file path/name, not an external URL.
@@ -67,6 +68,25 @@ Jazzmin admin theme settings live in:
 - `course_finder.settings.JAZZMIN_SETTINGS`
 - `course_finder.settings.JAZZMIN_UI_TWEAKS`
 - The Jazzmin header menu includes `Data backup`, linking to `/admin/data-backup/`.
+
+## Public Homepage
+
+The root URL `/` shows a public course gallery.
+
+- URL wiring:
+  - `course_finder.urls` includes `core.urls` at `""`.
+  - `core.urls` maps `""` to `core.views.home`.
+- Template:
+  - `core/templates/core/home.html`
+- Data behavior:
+  - Lists latest `Resource` rows.
+  - Uses `select_related("category")` to avoid N+1 category queries.
+  - Supports search through `q` across resource title, description, and category name.
+  - Supports category filtering through `category=<category_id>` while preserving the search query.
+  - Uses Django `Paginator` with 12 resources per page.
+  - Shows thumbnail uploads when available and a fallback tile when not.
+  - UI is responsive: mobile search stacks vertically, category chips scroll horizontally, and course cards use an auto-fit grid.
+- Tests in `core.tests.HomeViewTests` cover rendering, search filtering, category filtering, and stable query count for the resource grid.
 
 ## Data Backup
 
