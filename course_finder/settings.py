@@ -29,6 +29,12 @@ ALLOWED_HOSTS = [
     if host.strip()
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    origin.strip()
+    for origin in os.getenv("CSRF_TRUSTED_ORIGINS", "").split(",")
+    if origin.strip()
+]
+
 # Telegram bot token for telegram app usage.
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "7649631180:AAF2YQrZshiIKI9BoomX0OzKqy2zQ8slSFU")
 TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "1460245017")
@@ -37,6 +43,7 @@ TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "1460245017")
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -47,6 +54,45 @@ INSTALLED_APPS = [
     'resources',
     'telegram',
 ]
+
+JAZZMIN_SETTINGS = {
+    "site_title": "Course Finder Admin",
+    "site_header": "Course Finder",
+    "site_brand": "Course Finder",
+    "welcome_sign": "Welcome to Course Finder admin",
+    "copyright": "Course Finder",
+    "show_sidebar": True,
+    "navigation_expanded": True,
+    "topmenu_links": [
+        {"name": "Dashboard", "url": "admin:index", "icon": "fas fa-home"},
+        {"name": "Data backup", "url": "/admin/data-backup/", "icon": "fas fa-database"},
+    ],
+    "hide_apps": [],
+    "hide_models": [],
+    "icons": {
+        "auth": "fas fa-users-cog",
+        "auth.User": "fas fa-user",
+        "auth.Group": "fas fa-users",
+        "resources.Category": "fas fa-folder-open",
+        "resources.Resource": "fas fa-book-open",
+        "telegram": "fab fa-telegram",
+    },
+}
+
+JAZZMIN_UI_TWEAKS = {
+    "theme": "flatly",
+    "navbar": "navbar-white navbar-light",
+    "sidebar": "sidebar-dark-primary",
+    "accent": "accent-primary",
+    "button_classes": {
+        "primary": "btn-primary",
+        "secondary": "btn-secondary",
+        "info": "btn-info",
+        "warning": "btn-warning",
+        "danger": "btn-danger",
+        "success": "btn-success",
+    },
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -128,4 +174,5 @@ USE_TZ = True
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [BASE_DIR / "core" / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
+MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"

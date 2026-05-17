@@ -15,9 +15,17 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.conf import settings
+from django.conf.urls.static import static
 from django.urls import include, path
 
+from core.admin_views import system_data_backup_view
+
 urlpatterns = [
+    path("admin/data-backup/", admin.site.admin_view(system_data_backup_view), name="system_data_backup"),
     path('admin/', admin.site.urls),
     path("telegram/", include("telegram.urls")),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

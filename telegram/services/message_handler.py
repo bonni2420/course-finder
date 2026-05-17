@@ -9,6 +9,6 @@ def build_reply(command_text: str) -> str:
         return render_categories_message()
 
     if command_text in SUPPORTED_START_COMMANDS:
-        return "Chào bạn. Gửi /categories để xem danh mục khóa học."
+        return "Chào bạn. Gửi /categories để xem danh mục, hoặc /resources để xem khóa học mới nhất."
 
-    return "Lệnh chưa hỗ trợ. Gửi /categories để xem danh mục khóa học."
+    return "Lệnh chưa hỗ trợ. Gửi /categories hoặc /resources để xem khóa học."

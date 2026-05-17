@@ -16,7 +16,11 @@ class Category(models.Model):
 
 class Resource(models.Model):
     title = models.CharField(max_length=255)
-    thumbnail_url = models.URLField(max_length=500, blank=True)
+    thumbnail_url = models.ImageField(
+        upload_to="resource_thumbnails/",
+        blank=True,
+        verbose_name="Thumbnail",
+    )
     description = models.TextField(blank=True)
     course_link = models.URLField(max_length=500)
     category = models.ForeignKey(

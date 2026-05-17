@@ -30,5 +30,33 @@ def send_message(chat_id: int, text: str) -> None:
 
     try:
         request.urlopen(req, timeout=10)
-    except error.URLError:
+    except (error.HTTPError, error.URLError):
+        return
+
+
+def send_photo(chat_id: int, photo_url: str, caption: str = "") -> None:
+    token = settings.TELEGRAM_BOT_TOKEN
+    if not token:
+        return
+
+    url = f"{TELEGRAM_API_BASE}/bot{token}/sendPhoto"
+    payload = json.dumps(
+        {
+            "chat_id": chat_id,
+            "photo": photo_url,
+            "caption": caption,
+            "parse_mode": "HTML",
+        }
+    ).encode("utf-8")
+
+    req = request.Request(
+        url,
+        data=payload,
+        headers={"Content-Type": "application/json"},
+        method="POST",
+    )
+
+    try:
+        request.urlopen(req, timeout=10)
+    except (error.HTTPError, error.URLError):
         return
