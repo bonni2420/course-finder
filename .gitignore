@@ -139,6 +139,9 @@ cython_debug/
 *.pot
 *.pyc
 local_settings.py
+db.sqlite3
+staticfiles/
+media/
 
 
 # === DOCKER ===
@@ -198,6 +201,7 @@ coverage.xml
 .pytest_cache/
 
 # Security (don't commit credentials)
+.env
 **/secrets.py
 **/credentials.json
 **/service-account.json
