@@ -139,8 +139,6 @@ cython_debug/
 *.pot
 *.pyc
 local_settings.py
-staticfiles/
-media/
 
 
 # === DOCKER ===
