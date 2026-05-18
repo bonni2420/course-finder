@@ -1,9 +1,11 @@
 import json
+import logging
 from urllib import error, request
 
 from django.conf import settings
 
 TELEGRAM_API_BASE = "https://api.telegram.org"
+logger = logging.getLogger(__name__)
 
 
 def send_message(chat_id: int, text: str) -> None:
@@ -29,9 +31,13 @@ def send_message(chat_id: int, text: str) -> None:
     )
 
     try:
-        request.urlopen(req, timeout=10)
-    except (error.HTTPError, error.URLError):
-        return
+        with request.urlopen(req, timeout=10) as response:
+            response.read()
+    except error.HTTPError as exc:
+        response_body = exc.read().decode("utf-8", errors="replace")
+        logger.warning("Telegram sendMessage failed: status=%s body=%s", exc.code, response_body)
+    except error.URLError as exc:
+        logger.warning("Telegram sendMessage connection failed: %s", exc)
 
 
 def send_photo(chat_id: int, photo_url: str, caption: str = "") -> None:
@@ -57,6 +63,10 @@ def send_photo(chat_id: int, photo_url: str, caption: str = "") -> None:
     )
 
     try:
-        request.urlopen(req, timeout=10)
-    except (error.HTTPError, error.URLError):
-        return
+        with request.urlopen(req, timeout=10) as response:
+            response.read()
+    except error.HTTPError as exc:
+        response_body = exc.read().decode("utf-8", errors="replace")
+        logger.warning("Telegram sendPhoto failed: status=%s body=%s", exc.code, response_body)
+    except error.URLError as exc:
+        logger.warning("Telegram sendPhoto connection failed: %s", exc)
