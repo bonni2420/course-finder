@@ -24,7 +24,7 @@ Main apps:
   - `MEDIA_URL = "/media/"`
   - `MEDIA_ROOT = BASE_DIR / "media"`
   - `static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)` in `course_finder/urls.py` when `DEBUG=True`.
-  - `SERVE_MEDIA_FILES` controls production serving of local media files; `render.yaml` sets it to `True` so `/media/...` URLs work on Render.
+  - `SERVE_MEDIA_FILES` controls production serving of local media files; it defaults to `True` when `DEBUG=False`, and `render.yaml` also sets it to `True` so `/media/...` URLs work on Render.
   - Render's local filesystem is ephemeral without a persistent disk, so uploaded media should move to persistent/external storage for durable production use.
 - Django admin uses `django-jazzmin` for the admin theme.
 - The public homepage lives at `/` and is served by `core.views.home`.
