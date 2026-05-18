@@ -20,11 +20,3 @@ services:
         value: "True"
       - key: WEB_CONCURRENCY
         value: "1"
-      - key: DATABASE_URL
-        fromDatabase:
-          name: course-finder-db
-          property: connectionString
-
-databases:
-  - name: course-finder-db
-    plan: free
