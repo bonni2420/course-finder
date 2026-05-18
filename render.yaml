@@ -18,5 +18,7 @@ services:
         value: "https://*.onrender.com"
       - key: SECURE_SSL_REDIRECT
         value: "True"
+      - key: SERVE_MEDIA_FILES
+        value: "True"
       - key: WEB_CONCURRENCY
         value: "1"
