@@ -1,4 +1,5 @@
 import os
+import sys
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -16,6 +17,7 @@ def env_bool(name: str, default: bool = False) -> bool:
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env_bool("DEBUG", default=False)
+IS_LOCAL_RUNSERVER = "runserver" in sys.argv
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv("SECRET_KEY")
@@ -30,6 +32,10 @@ ALLOWED_HOSTS = [
     for host in os.getenv("ALLOWED_HOSTS", "127.0.0.1,localhost,.onrender.com").split(",")
     if host.strip()
 ]
+if DEBUG or IS_LOCAL_RUNSERVER:
+    for local_host in ["127.0.0.1", "localhost", "testserver"]:
+        if local_host not in ALLOWED_HOSTS:
+            ALLOWED_HOSTS.append(local_host)
 
 CSRF_TRUSTED_ORIGINS = [
     origin.strip()
@@ -160,19 +166,19 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
-
+LANGUAGE_CODE = "vi"
 TIME_ZONE = os.getenv("TIME_ZONE", "Asia/Ho_Chi_Minh")
-
 USE_I18N = True
-
 USE_TZ = True
+
+SITE_NAME = os.getenv("SITE_NAME", "Course Finder")
+SITE_URL = os.getenv("SITE_URL", os.getenv("PUBLIC_SITE_URL", "")).rstrip("/")
+SITE_DESCRIPTION = os.getenv(
+    "SITE_DESCRIPTION",
+    "Course Finder tuyển chọn khóa học miễn phí, tài liệu học tập và lộ trình kỹ năng để bạn tìm nhanh, học ngay.",
+)
 
 # Static files (CSS, JavaScript, Images)
-LANGUAGE_CODE = "en-us"
-TIME_ZONE = "Asia/Ho_Chi_Minh"
-USE_I18N = True
-USE_TZ = True
 
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
@@ -189,6 +195,6 @@ MEDIA_ROOT = BASE_DIR / "media"
 SERVE_MEDIA_FILES = env_bool("SERVE_MEDIA_FILES", default=not DEBUG)
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-SECURE_SSL_REDIRECT = env_bool("SECURE_SSL_REDIRECT", default=False)
-SESSION_COOKIE_SECURE = env_bool("SESSION_COOKIE_SECURE", default=not DEBUG)
-CSRF_COOKIE_SECURE = env_bool("CSRF_COOKIE_SECURE", default=not DEBUG)
+SECURE_SSL_REDIRECT = env_bool("SECURE_SSL_REDIRECT", default=False) and not DEBUG and not IS_LOCAL_RUNSERVER
+SESSION_COOKIE_SECURE = env_bool("SESSION_COOKIE_SECURE", default=not DEBUG) and not DEBUG and not IS_LOCAL_RUNSERVER
+CSRF_COOKIE_SECURE = env_bool("CSRF_COOKIE_SECURE", default=not DEBUG) and not DEBUG and not IS_LOCAL_RUNSERVER

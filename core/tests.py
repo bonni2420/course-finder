@@ -18,6 +18,7 @@ from core.services.system_backup_service import (
 from resources.models import Category, Resource
 
 
+@override_settings(SECURE_SSL_REDIRECT=False)
 class HomeViewTests(TestCase):
     def setUp(self) -> None:
         python = Category.objects.create(name="Python")
@@ -42,7 +43,17 @@ class HomeViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Course Finder")
         self.assertContains(response, "Django Course")
-        self.assertContains(response, "Mở bài học")
+        self.assertContains(response, "Xem khóa học")
+
+    def test_home_has_professional_seo_metadata(self) -> None:
+        response = self.client.get("/")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "<title>Course Finder - Khóa học miễn phí chọn lọc</title>")
+        self.assertContains(response, '<link rel="canonical" href="http://testserver/">')
+        self.assertContains(response, 'property="og:site_name" content="Course Finder"')
+        self.assertContains(response, '"@type":"WebSite"')
+        self.assertContains(response, '"@type":"ItemList"')
 
     def test_home_search_filters_resources(self) -> None:
         response = self.client.get("/", {"q": "Color"})
@@ -50,6 +61,7 @@ class HomeViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Color Systems")
         self.assertNotContains(response, "Django Course 0")
+        self.assertContains(response, '<meta name="robots" content="noindex,follow">')
 
     def test_home_category_filter_filters_resources(self) -> None:
         design = Category.objects.get(name="Design")
@@ -59,13 +71,70 @@ class HomeViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Color Systems")
         self.assertContains(response, "Tất cả")
+        self.assertContains(response, f'<link rel="canonical" href="http://testserver{design.get_absolute_url()}">')
         self.assertNotContains(response, "Django Course 0")
+
+    def test_category_detail_uses_clean_url(self) -> None:
+        design = Category.objects.get(name="Design")
+
+        response = self.client.get(design.get_absolute_url())
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Color Systems")
+        self.assertContains(response, f'<link rel="canonical" href="http://testserver{design.get_absolute_url()}">')
+
+    def test_category_detail_redirects_stale_slug(self) -> None:
+        design = Category.objects.get(name="Design")
+
+        response = self.client.get(f"/danh-muc/{design.id}-old-title/")
+
+        self.assertRedirects(response, design.get_absolute_url(), status_code=301)
 
     def test_home_query_count_is_stable_for_resource_grid(self) -> None:
         with self.assertNumQueries(3):
             response = self.client.get("/")
 
         self.assertEqual(response.status_code, 200)
+
+    def test_resource_detail_has_canonical_metadata_and_schema(self) -> None:
+        resource = Resource.objects.get(title="Color Systems")
+
+        response = self.client.get(resource.get_absolute_url())
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "<title>Color Systems | Khóa học miễn phí</title>")
+        self.assertContains(response, f'<link rel="canonical" href="http://testserver{resource.get_absolute_url()}">')
+        self.assertContains(response, '"@type":"Course"')
+        self.assertContains(response, "Visual design foundations")
+        self.assertContains(response, "Mở khóa học gốc")
+
+    def test_resource_detail_redirects_stale_slug(self) -> None:
+        resource = Resource.objects.get(title="Color Systems")
+
+        response = self.client.get(f"/khoa-hoc/{resource.id}-old-title/")
+
+        self.assertRedirects(response, resource.get_absolute_url(), status_code=301)
+
+    def test_sitemap_lists_public_indexable_pages(self) -> None:
+        resource = Resource.objects.get(title="Color Systems")
+        design = Category.objects.get(name="Design")
+
+        response = self.client.get("/sitemap.xml")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response["Content-Type"], "application/xml; charset=utf-8")
+        self.assertContains(response, "<urlset", status_code=200)
+        self.assertContains(response, f"http://testserver{design.get_absolute_url()}")
+        self.assertContains(response, f"http://testserver{resource.get_absolute_url()}")
+
+    def test_robots_references_sitemap_and_blocks_private_paths(self) -> None:
+        response = self.client.get("/robots.txt")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response["Content-Type"], "text/plain; charset=utf-8")
+        self.assertContains(response, "Disallow: /admin/")
+        self.assertContains(response, "Disallow: /telegram/")
+        self.assertContains(response, "Sitemap: http://testserver/sitemap.xml")
 
 
 class SystemBackupTests(TestCase):

@@ -1,4 +1,6 @@
 from django.db import models
+from django.urls import reverse
+from django.utils.text import slugify
 
 
 class Category(models.Model):
@@ -12,6 +14,10 @@ class Category(models.Model):
 
     def __str__(self) -> str:
         return self.name
+
+    def get_absolute_url(self) -> str:
+        slug = slugify(self.name) or "danh-muc"
+        return reverse("core:category_detail", kwargs={"category_pk": self.pk, "category_slug": slug})
 
 
 class Resource(models.Model):
@@ -36,3 +42,7 @@ class Resource(models.Model):
 
     def __str__(self) -> str:
         return self.title
+
+    def get_absolute_url(self) -> str:
+        slug = slugify(self.title) or "khoa-hoc"
+        return reverse("core:resource_detail", kwargs={"pk": self.pk, "slug": slug})

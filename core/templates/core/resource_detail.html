@@ -1,0 +1,71 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+  <nav class="breadcrumbs" aria-label="Breadcrumb">
+    <a href="{% url 'core:home' %}">Trang chủ</a>
+    <span aria-hidden="true">/</span>
+    <a href="{{ resource.category.get_absolute_url }}">{{ resource.category.name }}</a>
+    <span aria-hidden="true">/</span>
+    <span>{{ resource.title }}</span>
+  </nav>
+
+  <article class="detail-layout">
+    <section class="detail-main">
+      <p class="category detail-category">{{ resource.category.name }}</p>
+      <h1>{{ resource.title }}</h1>
+      <p class="lead detail-lead">
+        {% if resource.description %}
+          {{ resource.description }}
+        {% else %}
+          Khóa học đã sẵn sàng để mở và bắt đầu.
+        {% endif %}
+      </p>
+      <div class="detail-actions">
+        <a class="button" href="{{ resource.course_link }}" target="_blank" rel="noopener noreferrer nofollow">Mở khóa học gốc</a>
+        <a class="ghost-button" href="{{ resource.category.get_absolute_url }}">Xem cùng danh mục</a>
+      </div>
+    </section>
+
+    <aside class="detail-media" aria-label="Ảnh khóa học">
+      {% if resource.thumbnail_url %}
+        <img src="{{ resource.thumbnail_url.url }}" alt="Ảnh minh họa khóa học {{ resource.title }}" loading="eager" decoding="async">
+      {% else %}
+        <div class="thumb-fallback detail-fallback">{{ resource.title|first|upper }}</div>
+      {% endif %}
+    </aside>
+  </article>
+
+  {% if related_resources %}
+    <section class="related-section" aria-label="Khóa học liên quan">
+      <div class="section-title">
+        <h2>Khóa học liên quan</h2>
+        <span>{{ resource.category.name }}</span>
+      </div>
+      <div class="course-grid related-grid">
+        {% for related in related_resources %}
+          <article class="course-card">
+            <a class="thumb" href="{{ related.get_absolute_url }}" aria-label="Xem {{ related.title }}">
+              {% if related.thumbnail_url %}
+                <img src="{{ related.thumbnail_url.url }}" alt="Ảnh minh họa khóa học {{ related.title }}" loading="lazy" decoding="async">
+              {% else %}
+                <div class="thumb-fallback">{{ related.title|first|upper }}</div>
+              {% endif %}
+            </a>
+            <div class="card-body">
+              <div class="category">{{ related.category.name }}</div>
+              <h3><a href="{{ related.get_absolute_url }}">{{ related.title }}</a></h3>
+              <p class="description">
+                {% if related.description %}
+                  {{ related.description|truncatechars:130 }}
+                {% else %}
+                  Khóa học đã sẵn sàng để mở và bắt đầu.
+                {% endif %}
+              </p>
+              <a class="open-link" href="{{ related.get_absolute_url }}">Xem khóa học</a>
+            </div>
+          </article>
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
+{% endblock %}

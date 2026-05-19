@@ -1,0 +1,51 @@
+{% load static %}
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ seo_title }}</title>
+  <meta name="description" content="{{ seo_description }}">
+  <meta name="robots" content="{{ seo_robots|default:'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1' }}">
+  <link rel="canonical" href="{{ canonical_url }}">
+  <link rel="alternate" hreflang="vi" href="{{ canonical_url }}">
+  <link rel="sitemap" type="application/xml" href="{{ sitemap_url }}">
+  <meta name="theme-color" content="#091017">
+
+  <meta property="og:locale" content="vi_VN">
+  <meta property="og:site_name" content="{{ site_name }}">
+  <meta property="og:type" content="{{ og_type|default:'website' }}">
+  <meta property="og:title" content="{{ seo_title }}">
+  <meta property="og:description" content="{{ seo_description }}">
+  <meta property="og:url" content="{{ canonical_url }}">
+  {% if og_image %}
+    <meta property="og:image" content="{{ og_image }}">
+    <meta property="og:image:alt" content="{{ seo_title }}">
+  {% endif %}
+
+  <meta name="twitter:card" content="{% if og_image %}summary_large_image{% else %}summary{% endif %}">
+  <meta name="twitter:title" content="{{ seo_title }}">
+  <meta name="twitter:description" content="{{ seo_description }}">
+  {% if og_image %}
+    <meta name="twitter:image" content="{{ og_image }}">
+  {% endif %}
+
+  <link rel="stylesheet" href="{% static 'core/css/index.css' %}">
+  {% if structured_data %}
+    <script type="application/ld+json">{{ structured_data|safe }}</script>
+  {% endif %}
+</head>
+<body>
+  <a class="skip-link" href="#content">Bỏ qua phần điều hướng</a>
+  <main class="shell" id="content">
+    <nav class="topbar" aria-label="Điều hướng chính">
+      <a href="{% url 'core:home' %}" class="brand">
+        <span class="brand-mark" aria-hidden="true">CF</span>
+        <span class="brand-name">Course Finder</span>
+      </a>
+    </nav>
+
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>
