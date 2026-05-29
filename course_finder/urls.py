@@ -24,6 +24,7 @@ from core.admin_views import system_data_backup_view
 
 urlpatterns = [
     path("", include("core.urls")),
+    path("licenses/", include("licenses.urls")),
     path("admin/data-backup/", admin.site.admin_view(system_data_backup_view), name="system_data_backup"),
     path('admin/', admin.site.urls),
     path("telegram/", include("telegram.urls")),

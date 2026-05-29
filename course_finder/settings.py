@@ -61,7 +61,10 @@ INSTALLED_APPS = [
     'core',
     'resources',
     'telegram',
+    'licenses',
 ]
+
+LICENSE_HMAC_SECRET: str = os.getenv("LICENSE_HMAC_SECRET", "cf-hmac-default-dev")
 
 JAZZMIN_SETTINGS = {
     "site_title": "Course Finder Admin",
