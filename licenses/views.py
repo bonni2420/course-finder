@@ -9,8 +9,16 @@ from typing import Any
 from django.core.cache import cache
 from django.http import JsonResponse
 from django.utils import timezone
+import urllib.request as _urllib_req
+import urllib.error
+
 from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_POST, require_GET
+
+_GITHUB_UPDATE_URL: str = os.environ.get(
+    "CLIPFLOW_UPDATE_URL",
+    "https://raw.githubusercontent.com/maiviet283/meida_harvester/main/update.json",
+)
 
 from .models import DeviceSession, License, ValidateLog
 
@@ -176,3 +184,19 @@ def validate(request):
     return _ok_response(device_token, lic.expires_at)
 
 
+# ---------------------------------------------------------------------------
+# GET /licenses/version/  — proxy update.json, ẩn GitHub URL khỏi client
+# ---------------------------------------------------------------------------
+
+@require_GET
+def app_version(request):
+    try:
+        req = _urllib_req.Request(
+            _GITHUB_UPDATE_URL,
+            headers={"User-Agent": "ClipFlow-Backend"},
+        )
+        with _urllib_req.urlopen(req, timeout=8) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+        return JsonResponse(data)
+    except (urllib.error.URLError, OSError, json.JSONDecodeError):
+        return JsonResponse({"error": "unavailable"}, status=503)
